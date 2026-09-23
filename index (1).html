@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Awanku — Beranda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sky-1:#eaf4ff;
+    --sky-2:#d6ebff;
+    --blue-soft:#bfe0ff;
+    --blue-mid:#8fc4f4;
+    --blue-deep:#5a9bdb;
+    --white:#ffffff;
+    --ink:#33455e;
+    --ink-soft:#6c85a3;
+    --pink:#ffd9ea;
+    --radius:22px;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  *{box-sizing:inherit;}
+  html,body{height:100%;margin:0;}
+  body{
+    font-family:'Nunito',sans-serif;
+    color:var(--ink);
+    background:linear-gradient(180deg,var(--sky-1) 0%,var(--sky-2) 60%,var(--blue-soft) 100%);
+    min-height:100%;
+    overflow-x:hidden;
+    position:relative;
+  }
+  h1,h2,h3,.brand{font-family:'Baloo 2',sans-serif;}
+
+  /* floating cute blobs */
+  .cloud{
+    position:fixed;
+    pointer-events:none;
+    opacity:0.9;
+    z-index:0;
+  }
+  .cloud svg{display:block;width:100%;height:100%;}
+  .c1{top:6%;left:-4%;width:160px;height:90px;animation:drift 9s ease-in-out infinite;}
+  .c2{top:16%;right:-6%;width:210px;height:120px;animation:drift 11s ease-in-out infinite reverse;}
+  .c3{bottom:8%;left:4%;width:140px;height:80px;animation:drift 7.5s ease-in-out infinite;}
+  .c4{bottom:14%;right:6%;width:120px;height:70px;animation:drift 10s ease-in-out infinite reverse;}
+  @keyframes drift{
+    0%,100%{transform:translateY(0px);}
+    50%{transform:translateY(-14px);}
+  }
+  .star{position:fixed;font-size:18px;opacity:.55;z-index:0;color:var(--blue-deep);}
+  .s1{top:28%;left:12%;}
+  .s2{top:12%;right:22%;}
+  .s3{bottom:24%;right:14%;}
+  .s4{bottom:34%;left:22%;}
+
+  .view{
+    position:relative;
+    z-index:1;
+    min-height:100vh;
+    min-height:100dvh;
+    display:none;
+  }
+  .view.active{display:flex;flex-direction:column;}
+
+  /* ---------- LOGIN ---------- */
+  #view-login{align-items:center;justify-content:center;padding:32px 20px;}
+  .login-card{
+    background:var(--white);
+    border-radius:28px;
+    padding:40px 32px 34px;
+    width:100%;
+    max-width:360px;
+    box-shadow:0 20px 50px -18px rgba(90,155,219,0.45);
+    text-align:center;
+    animation:pop .5s cubic-bezier(.2,.9,.3,1.3);
+  }
+  @keyframes pop{
+    from{opacity:0;transform:translateY(16px) scale(.97);}
+    to{opacity:1;transform:translateY(0) scale(1);}
+  }
+  .badge{
+    width:64px;height:64px;border-radius:50%;
+    background:linear-gradient(135deg,var(--blue-soft),var(--blue-mid));
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 14px;
+    font-size:30px;
+  }
+  .login-card h1{font-size:26px;margin:0 0 4px;color:var(--blue-deep);}
+  .login-card p.tag{margin:0 0 26px;color:var(--ink-soft);font-size:14px;}
+  .field{text-align:left;margin-bottom:16px;}
+  .field label{font-size:13px;font-weight:700;color:var(--ink-soft);display:block;margin-bottom:6px;}
+  .field input{
+    width:100%;
+    padding:12px 14px;
+    border-radius:14px;
+    border:2px solid var(--sky-2);
+    background:var(--sky-1);
+    font-family:'Nunito',sans-serif;
+    font-size:15px;
+    color:var(--ink);
+    outline:none;
+    transition:border-color .2s, background .2s;
+  }
+  .field input:focus{border-color:var(--blue-mid);background:var(--white);}
+  .btn{
+    width:100%;
+    border:none;
+    border-radius:16px;
+    padding:13px 16px;
+    font-family:'Baloo 2',sans-serif;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    color:var(--white);
+    background:linear-gradient(135deg,var(--blue-mid),var(--blue-deep));
+    box-shadow:0 10px 22px -10px rgba(90,155,219,0.7);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 14px 26px -10px rgba(90,155,219,0.8);}
+  .btn:active{transform:translateY(0);}
+  .hint{margin-top:16px;font-size:12px;color:var(--ink-soft);}
+  .error{
+    display:none;
+    background:#fff0f4;
+    color:#c8577a;
+    border-radius:12px;
+    padding:9px 12px;
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:14px;
+  }
+
+  /* ---------- NAV (home/about) ---------- */
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 22px;
+    background:rgba(255,255,255,.65);
+    backdrop-filter:blur(6px);
+    position:sticky;top:0;z-index:2;
+    border-bottom:1px solid rgba(143,196,244,.35);
+  }
+  .topbar .brand{font-size:19px;font-weight:700;color:var(--blue-deep);display:flex;align-items:center;gap:8px;}
+  .topbar .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--pink);}
+  nav.tabs{display:flex;gap:6px;background:var(--white);padding:5px;border-radius:14px;box-shadow:0 6px 16px -10px rgba(90,155,219,.5);}
+  nav.tabs button{
+    border:none;background:transparent;padding:8px 14px;border-radius:10px;
+    font-family:'Baloo 2',sans-serif;font-size:14px;font-weight:600;color:var(--ink-soft);
+    cursor:pointer;transition:.2s;
+  }
+  nav.tabs button.active{background:linear-gradient(135deg,var(--blue-soft),var(--blue-mid));color:var(--white);}
+  .logout-btn{
+    border:none;background:var(--white);color:var(--blue-deep);
+    padding:9px 16px;border-radius:12px;font-family:'Baloo 2',sans-serif;font-weight:700;font-size:14px;
+    cursor:pointer;box-shadow:0 6px 16px -10px rgba(90,155,219,.5);
+  }
+  .logout-btn:hover{background:#fff0f4;color:#c8577a;}
+
+  .content{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px 60px;}
+  .panel{
+    background:var(--white);
+    border-radius:var(--radius);
+    padding:44px 38px;
+    max-width:520px;
+    width:100%;
+    text-align:center;
+    box-shadow:0 20px 50px -20px rgba(90,155,219,0.4);
+    animation:pop .45s cubic-bezier(.2,.9,.3,1.3);
+  }
+  .panel .emoji{font-size:46px;margin-bottom:10px;}
+  .panel h2{font-size:28px;margin:0 0 10px;color:var(--blue-deep);}
+  .panel p{margin:0 0 6px;color:var(--ink-soft);line-height:1.6;font-size:15px;}
+  .chip-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:20px;}
+  .chip{background:var(--sky-1);border:1px solid var(--sky-2);color:var(--blue-deep);font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px;}
+
+  footer{
+    text-align:center;font-size:12px;color:var(--ink-soft);padding:14px 20px 22px;position:relative;z-index:1;
+  }
+
+  @media (max-width:480px){
+    .topbar{padding:12px 14px;}
+    nav.tabs button{padding:7px 10px;font-size:13px;}
+    .panel{padding:34px 24px;}
+  }
+</style>
+</head>
+<body>
+
+  <!-- decorative clouds -->
+  <div class="cloud c1"><svg viewBox="0 0 200 110"><ellipse cx="60" cy="70" rx="55" ry="35" fill="#ffffff"/><ellipse cx="110" cy="55" rx="45" ry="38" fill="#ffffff"/><ellipse cx="150" cy="72" rx="38" ry="28" fill="#ffffff"/></svg></div>
+  <div class="cloud c2"><svg viewBox="0 0 200 110"><ellipse cx="60" cy="70" rx="55" ry="35" fill="#ffffff"/><ellipse cx="110" cy="55" rx="45" ry="38" fill="#ffffff"/><ellipse cx="150" cy="72" rx="38" ry="28" fill="#ffffff"/></svg></div>
+  <div class="cloud c3"><svg viewBox="0 0 200 110"><ellipse cx="60" cy="70" rx="55" ry="35" fill="#ffffff"/><ellipse cx="110" cy="55" rx="45" ry="38" fill="#ffffff"/><ellipse cx="150" cy="72" rx="38" ry="28" fill="#ffffff"/></svg></div>
+  <div class="cloud c4"><svg viewBox="0 0 200 110"><ellipse cx="60" cy="70" rx="55" ry="35" fill="#ffffff"/><ellipse cx="110" cy="55" rx="45" ry="38" fill="#ffffff"/><ellipse cx="150" cy="72" rx="38" ry="28" fill="#ffffff"/></svg></div>
+  <div class="star s1">✦</div>
+  <div class="star s2">✧</div>
+  <div class="star s3">✦</div>
+  <div class="star s4">✧</div>
+
+  <!-- LOGIN VIEW -->
+  <section id="view-login" class="view active">
+    <div class="login-card">
+      <div class="badge">☁️</div>
+      <h1>Awanku</h1>
+      <p class="tag">Masuk dulu, yuk, sebelum menjelajah~</p>
+      <div class="error" id="loginError">Nama pengguna & kata sandi wajib diisi ya!</div>
+      <form id="loginForm">
+        <div class="field">
+          <label for="username">Nama pengguna</label>
+          <input id="username" type="text" placeholder="contoh: dinda123" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="password">Kata sandi</label>
+          <input id="password" type="password" placeholder="••••••••" autocomplete="off">
+        </div>
+        <button class="btn" type="submit">Masuk</button>
+      </form>
+      <p class="hint">Demo UI/UX — isi apa saja lalu tekan Masuk 💙</p>
+    </div>
+  </section>
+
+  <!-- HOME VIEW -->
+  <section id="view-home" class="view">
+    <div class="topbar">
+      <div class="brand"><span class="dot"></span>Awanku</div>
+      <nav class="tabs">
+        <button class="tab-home active" onclick="showView('home')">Home</button>
+        <button class="tab-about" onclick="showView('about')">About</button>
+      </nav>
+      <button class="logout-btn" onclick="logout()">Log out</button>
+    </div>
+    <div class="content">
+      <div class="panel">
+        <div class="emoji">👋</div>
+        <h2><span id="helloName">Hello</span>, welcome!</h2>
+        <p>Selamat datang di Awanku, ruang percobaan alur login yang tenang dan lucu ala langit biru pastel.</p>
+        <p>Coba jelajahi halaman About, lalu log out untuk kembali ke layar masuk.</p>
+        <div class="chip-row">
+          <span class="chip">UI Lembut</span>
+          <span class="chip">Alur Sederhana</span>
+          <span class="chip">Tema Biru Pastel</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT VIEW -->
+  <section id="view-about" class="view">
+    <div class="topbar">
+      <div class="brand"><span class="dot"></span>Awanku</div>
+      <nav class="tabs">
+        <button class="tab-home" onclick="showView('home')">Home</button>
+        <button class="tab-about active" onclick="showView('about')">About</button>
+      </nav>
+      <button class="logout-btn" onclick="logout()">Log out</button>
+    </div>
+    <div class="content">
+      <div class="panel">
+        <div class="emoji">📎</div>
+        <h2>Tentang Website Ini</h2>
+        <p>Awanku dibuat sebagai tugas mata kuliah Multimedia Interaktif, dengan fokus utama pada rancangan UI/UX.</p>
+        <p>Alur yang diuji: Login → Home → About → Log out → kembali ke Login, dibalut nuansa biru pastel dan putih yang lembut serta motif awan &amp; bintang yang aesthetic.</p>
+        <div class="chip-row">
+          <span class="chip">Login</span>
+          <span class="chip">Home</span>
+          <span class="chip">About</span>
+          <span class="chip">Log out</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>Dibuat untuk tugas Multimedia Interaktif · Prodi Teknologi Pendidikan</footer>
+
+<script>
+  function showView(name){
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    document.getElementById('view-'+name).classList.add('active');
+    document.querySelectorAll('.tab-home').forEach(b=>b.classList.toggle('active', name==='home'));
+    document.querySelectorAll('.tab-about').forEach(b=>b.classList.toggle('active', name==='about'));
+    window.scrollTo(0,0);
+  }
+
+  document.getElementById('loginForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const u = document.getElementById('username').value.trim();
+    const p = document.getElementById('password').value.trim();
+    const err = document.getElementById('loginError');
+    if(!u || !p){
+      err.style.display = 'block';
+      return;
+    }
+    err.style.display = 'none';
+    document.getElementById('helloName').textContent = 'Hello, ' + u;
+    showView('home');
+  });
+
+  function logout(){
+    document.getElementById('username').value = '';
+    document.getElementById('password').value = '';
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    document.getElementById('view-login').classList.add('active');
+  }
+</script>
+</body>
+</html>
